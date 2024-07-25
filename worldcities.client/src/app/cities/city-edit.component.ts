@@ -107,7 +107,7 @@ export class CityEditComponent implements OnInit {
     var url = environment.baseUrl + 'api/Countries';
     var params = new HttpParams()
       .set("pageIndex", "0")
-      .set("pageSize", "10")
+      .set("pageSize", "9999")
       .set("sortColumn", "name");
 
     this.http.get<any>(url, { params }).subscribe({
