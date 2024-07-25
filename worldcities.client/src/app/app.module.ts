@@ -19,6 +19,9 @@ import { AngularMaterialModule } from './angular-material.module';
 import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
 
+import { ReactiveFormsModule } from '@angular/forms';
+import { CityEditComponent } from './cities/city-edit.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +29,8 @@ import { CountriesComponent } from './countries/countries.component';
     FetchDataComponent,
     NavMenuComponent,
     CitiesComponent,
-    CountriesComponent
+    CountriesComponent,
+    CityEditComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
@@ -35,7 +39,8 @@ import { CountriesComponent } from './countries/countries.component';
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
-    AngularMaterialModule
+    AngularMaterialModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
