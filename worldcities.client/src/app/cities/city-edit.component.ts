@@ -42,9 +42,9 @@ export class CityEditComponent implements OnInit {
   loadData() {
     this.loadCountries();
     var idParam = this.activatedRoute.snapshot.paramMap.get('id');
-    var id = idParam ? +idParam : 0;
-    if (id) {
-      var url = environment.baseUrl + 'api/Cities/' + id;
+    this.id = idParam ? +idParam : 0;
+    if (this.id) {
+      var url = environment.baseUrl + 'api/Cities/' + this.id;
       this.http.get<City>(url).subscribe({
         next: (result) => {
           this.city = result;
