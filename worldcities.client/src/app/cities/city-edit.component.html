@@ -2,23 +2,42 @@
   <h1>{{title}}</h1>
   <p *ngIf="id && !city"><em>Loading...</em></p>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <p>
+      <mat-error *ngIf="form.invalid && form.hasError('isDupeCity')">
+        <strong>ERROR</strong>:
+        A city with the same <i>name</i>, <i>lat</i>, <i>lon</i>, and
+        <i>country</i> already exist.
+      </mat-error>
+    </p>
     <mat-form-field>
       <mat-label>Name:</mat-label>
       <input matInput formControlName="name" required
              placeholder="Type a name" />
+      <mat-error *ngIf="form.controls['name'].errors?.['required']">
+        Name is required.
+      </mat-error>
     </mat-form-field>
+    
 
     <mat-form-field>
       <mat-label>Latitude:</mat-label>
       <input matInput formControlName="lat" required
              placeholder="Insert latitude" />
+      <mat-error *ngIf="form.controls['lat'].errors?.['required']">
+        Latitude is required.
+      </mat-error>
     </mat-form-field>
+    
 
     <mat-form-field>
       <mat-label>Longtitude:</mat-label>
       <input matInput formControlName="lon" required
              placeholder="Insert longtitude" />
+      <mat-error *ngIf="form.controls['lon'].errors?.['required']">
+        Longitude is required.
+      </mat-error>
     </mat-form-field>
+    
 
     <mat-form-field *ngIf="countries">
       <mat-label value="">Select a Country...</mat-label>
@@ -28,11 +47,14 @@
           {{country.name}}
         </mat-option>
       </mat-select>
+      <mat-error *ngIf="form.controls['countryId'].errors?.['required']">
+        Please select a Country.
+      </mat-error>
     </mat-form-field>
-
+    
     <div>
       <button mat-flat-button color="primary"
-              type="submit">
+              type="submit" [disabled]="!form.valid">
         {{this.id ? "Save" : "Create"}}
       </button>
       <button mat-flat-button color="secondary"
