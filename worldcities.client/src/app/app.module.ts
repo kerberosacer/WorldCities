@@ -21,6 +21,7 @@ import { CountriesComponent } from './countries/countries.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { CityEditComponent } from './cities/city-edit.component';
+import { CountryEditComponent } from './countries/country-edit.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { CityEditComponent } from './cities/city-edit.component';
     NavMenuComponent,
     CitiesComponent,
     CountriesComponent,
-    CityEditComponent
+    CityEditComponent,
+    CountryEditComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
