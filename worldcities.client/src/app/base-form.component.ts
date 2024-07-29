@@ -17,21 +17,21 @@ export abstract class BaseFormComponent {
     Object.keys(control.errors || {}).forEach((key) => {
       switch (key) {
         case 'required':
-          errors.push('${displayName} ${customMessages?".[key] ?? is required.}');
+          errors.push(`${displayName} ${customMessages?.[key] ?? "is required."}`);
           break;
         case 'pattern':
-          errors.push('${displayName} ${customMessages?".[key] ?? contains invalid characters.}');
+          errors.push(`${displayName} ${customMessages?.[key] ?? "contains invalid characters."}`);
           break;
         case 'isDupeField':
-          errors.push('${displayName} ${customMessages?".[key] ?? already exists: please choose another.}');
+          errors.push(`${displayName} ${customMessages?.[key] ?? "already exists: please choose another."}`);
           break;
         default:
-          errors.push('${displayName} is invalid');
+          errors.push(`${displayName} is invalid`);
           break;
       }
     });
     return errors;
   }
 
-  contructor() { }
+  constructor() { }
 }
