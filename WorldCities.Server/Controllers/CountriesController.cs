@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using WorldCities.Server.Data;
 using WorldCities.Server.Data.Models;
 using System.Linq.Dynamic.Core;
+using Microsoft.Build.Framework;
 
 namespace WorldCities.Server.Controllers
 {
@@ -30,11 +31,19 @@ namespace WorldCities.Server.Controllers
             string? sortColumn = null,
             string? sortOrder = null,
             string? filterColumn = null,
-            string? filterQuery= null
+            string? filterQuery = null
             )
         {
             return await ApiResult<Country>.CreateAsync(
-                _context.Countries.AsNoTracking(),
+                _context.Countries.AsNoTracking()
+                .Select(c => new CountryDTO()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    ISO2= c.ISO2,
+                    ISO3 = c.ISO3,
+                    TotCities = c.Cities!.Count
+                }),
                 pageIndex,
                 pageSize,
                 sortColumn,
@@ -149,5 +158,6 @@ namespace WorldCities.Server.Controllers
                     countryId)
                 : false;
         }
+
     }
 }
