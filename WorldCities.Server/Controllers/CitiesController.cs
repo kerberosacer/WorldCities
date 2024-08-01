@@ -23,20 +23,22 @@ namespace WorldCities.Server.Controllers
 
         // GET: api/Cities
         [HttpGet]
-        public async Task<ActionResult<ApiResult<City>>> GetCities(
+        public async Task<ActionResult<ApiResult<CityDTO>>> GetCities(
             int pageIndex = 0, int pageSize = 10,
             string? sortColumn = null, string? sortOrder= null,
             string? filterColumn = null, string? filterQuery = null)
         {
-            var cities = _context.Cities.AsQueryable();
-            if(!string.IsNullOrEmpty(filterColumn) &&
-                !string.IsNullOrEmpty(filterQuery))
-            {
-                cities = cities.Where(c => c.Name.StartsWith(filterQuery));
-            }
-
-            return await ApiResult<City>.CreateAsync(
-                cities,
+            return await ApiResult<CityDTO>.CreateAsync(
+                _context.Cities.AsQueryable()
+                .Select(c=> new CityDTO()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Lat = c.Lat,
+                    Lon = c.Lon,
+                    CountryId = c.CountryId,
+                    CountryName = c.Country!.Name
+                }),
                 pageIndex,
                 pageSize,
                 sortColumn,

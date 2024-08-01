@@ -24,9 +24,22 @@ namespace WorldCities.Server.Data.Models
 		public required string ISO3 { get; set; }
 
 		#endregion
+		#region Client-side properties
+		[NotMapped]
+		public int TotCities
+		{
+			get
+			{
+				return (Cities != null) ? Cities.Count : _TotCities;
+			}
+			set { _TotCities = value; }
+		}
 
+		private int _TotCities = 0;
+
+		#endregion
 		#region Navigation Properties
-
+		[JsonIgnore]
 		public ICollection<City>? Cities { get; set; }
 
 		#endregion

@@ -25,7 +25,7 @@ namespace WorldCities.Server.Controllers
 
         // GET: api/Countries
         [HttpGet]
-        public async Task<ActionResult<ApiResult<Country>>> GetCountries(
+        public async Task<ActionResult<ApiResult<CountryDTO>>> GetCountries(
             int pageIndex = 0,
             int pageSize = 10,
             string? sortColumn = null,
@@ -34,7 +34,7 @@ namespace WorldCities.Server.Controllers
             string? filterQuery = null
             )
         {
-            return await ApiResult<Country>.CreateAsync(
+            return await ApiResult<CountryDTO>.CreateAsync(
                 _context.Countries.AsNoTracking()
                 .Select(c => new CountryDTO()
                 {

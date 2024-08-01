@@ -25,5 +25,10 @@ namespace WorldCities.Server.Data.Models
 		[ForeignKey(nameof(Country))]
 		public int CountryId { get; set; }
 		#endregion
+
+		#region Navigation properties
+		public Country? Country { get; set; }
+
+		#endregion
 	}
 }
