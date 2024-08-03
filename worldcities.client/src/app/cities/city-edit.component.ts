@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+//import { HttpClient, HttpParams } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormGroup, FormControl, Validators, AbstractControl, AsyncValidatorFn, AsyncValidator} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { environment } from './../../environments/environment';
+//import { environment } from './../../environments/environment';
 import { City } from './city';
 import { Country } from './../countries/country';
 
 import { BaseFormComponent } from '../base-form.component';
+import { CityService } from './city.service';
 
 @Component({
   selector: 'app-city-edit',
@@ -29,7 +30,7 @@ export class CityEditComponent
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private http: HttpClient) {
+    private cityService: CityService) {
     super();
   }
 
@@ -50,8 +51,7 @@ export class CityEditComponent
     var idParam = this.activatedRoute.snapshot.paramMap.get('id');
     this.id = idParam ? +idParam : 0;
     if (this.id) {
-      var url = environment.baseUrl + 'api/Cities/' + this.id;
-      this.http.get<City>(url).subscribe({
+      this.cityService.get(this.id).subscribe({
         next: (result) => {
           this.city = result;
           this.title = "Edit - " + this.city.name;
@@ -80,9 +80,7 @@ export class CityEditComponent
       if (this.id) {
         //edit mode
 
-        var url = environment.baseUrl + 'api/Cities/' + city.id;
-        this.http
-          .put<City>(url, city)
+        this.cityService.put(city)
           .subscribe({
             next: (result) => {
               console.log("City " + city!.id + "has been updated.");
@@ -94,10 +92,9 @@ export class CityEditComponent
       }
       else {
         //new mode
-
-        var url = environment.baseUrl + 'api/Cities';
-        this.http
-          .post<City>(url, city)
+        
+        this.cityService
+          .post(city)
           .subscribe({
             next: (result) => {
               console.log("City " + result.id + " has been created.");
@@ -110,13 +107,8 @@ export class CityEditComponent
     }
   }
   loadCountries() {
-    var url = environment.baseUrl + 'api/Countries';
-    var params = new HttpParams()
-      .set("pageIndex", "0")
-      .set("pageSize", "9999")
-      .set("sortColumn", "name");
-
-    this.http.get<any>(url, { params }).subscribe({
+    this.cityService.getCountries(0, 9999, "name",
+    "asc", null, null).subscribe({
       next: (result) => {
         this.countries = result.data;
       },
@@ -135,8 +127,7 @@ export class CityEditComponent
       city.lat = this.form.controls['lat'].value;
       city.countryId = +this.form.controls['countryId'].value;
 
-      var url = environment.baseUrl + 'api/Cities/IsDupeCity';
-      return this.http.post<boolean>(url, city)
+      return this.cityService.isDupeCity(city)
         .pipe(map(
           result => {
             return (result ? { isDupeCity: true } : null);
