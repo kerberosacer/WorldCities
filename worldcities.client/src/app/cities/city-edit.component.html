@@ -41,10 +41,10 @@
     </mat-form-field>
     
 
-    <mat-form-field *ngIf="countries">
+    <mat-form-field *ngIf="countries | async as result">
       <mat-label value="">Select a Country...</mat-label>
       <mat-select id="countryId" formControlName="countryId">
-        <mat-option *ngFor="let country of countries"
+        <mat-option *ngFor="let country of result"
                     [value]="country.id">
           {{country.name}}
         </mat-option>
@@ -65,4 +65,24 @@
       </button>
     </div>
   </form>
+  <!-- Form debug info panel-->
+  <div class="info">
+    <div class="info-header">Form Debug Info</div>
+    <div class="info-body">
+      <div class="info-label">
+        Form Value:
+      </div>
+      <div class="info-value">
+        {{ form.value | json }}
+      </div>
+      <hr/>
+      <div class="info-label">
+        Form Status:
+      </div>
+      <div class="info-value">
+        {{ form.status | json }}
+      </div>
+    </div>
+  </div>
+  
 </div>

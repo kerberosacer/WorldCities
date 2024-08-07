@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy } from '@angular/core';
 //import { HttpClient, HttpParams } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  FormGroup, FormControl, Validators, AbstractControl, AsyncValidatorFn, AsyncValidator} from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+  FormGroup, FormControl, Validators, AbstractControl, AsyncValidatorFn, AsyncValidator
+} from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 
 //import { environment } from './../../environments/environment';
 import { City } from './city';
@@ -19,14 +21,16 @@ import { CityService } from './city.service';
   styleUrl: './city-edit.component.scss'
 })
 export class CityEditComponent
-  extends BaseFormComponent implements OnInit {
+  extends BaseFormComponent implements OnInit, OnDestroy {
   title?: string;
 
   city?: City;
 
   id?: number;
 
-  countries?: Country[];
+  countries?: Observable<Country[]>;
+
+  private destroySubject = new Subject();
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -43,7 +47,43 @@ export class CityEditComponent
       Validators.pattern(/^[-]?[0-9]+(\.[0-9]{1,4})?$/)]),
       countryId: new FormControl('', Validators.required)
     }, null, this.isDupeCity());
+
+    //react to form changes
+    this.form.valueChanges
+    .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        if (!this.form.dirty) {
+          this.log("Form Model has been loaded.");
+        }
+        else {
+          this.log("Form was updated by the user.");
+        }
+      });
+
+    //react to changes in the form.name control
+    this.form.get("name")!.valueChanges
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        if (!this.form.dirty) {
+          this.log("Name has been loaded with initial values.");
+        }
+        else {
+          this.log("Name was updated by the user.");
+        }
+      });
+
     this.loadData();
+  }
+
+  ngOnDestroy() {
+    this.destroySubject.next(true);
+    this.destroySubject.complete();
+  }
+
+  log(str: string) {
+    console.log("["
+      + new Date().toLocaleString()
+      + "]" + str);
   }
 
   loadData() {
@@ -107,14 +147,11 @@ export class CityEditComponent
     }
   }
   loadCountries() {
-    this.cityService.getCountries(0, 9999, "name",
-    "asc", null, null).subscribe({
-      next: (result) => {
-        this.countries = result.data;
-      },
-      error: (error) => console.error(error)
-    });
-  }
+    this.countries = this.cityService.getCountries(
+      0, 9999, "name", "asc", null,
+      null)
+      .pipe(map(x => x.data));
+      }
 
   isDupeCity(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any } |

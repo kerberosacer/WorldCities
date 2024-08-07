@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
+using EFCore.BulkExtensions;
 
 namespace WorldCities.Server.Data
 {
@@ -59,7 +60,9 @@ namespace WorldCities.Server.Data
 
 			source = source.Skip(pageIndex * pageSize)
 				.Take(pageSize);
-
+#if DEBUG
+			var sql = source.ToParametrizedSql();
+#endif
 			var data = await source.ToListAsync();
 
 			return new ApiResult<T>(data, count, pageIndex, pageSize,
